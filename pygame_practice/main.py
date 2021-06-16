@@ -39,6 +39,7 @@ for _ in range(7):
   bullets_red.append(Bullet(0, HEIGHT * rnd.random(), rnd.random() - 0.5, rnd.random() - 0.5))
 
 bullets_blue = []
+<<<<<<< HEAD
 for _ in range(3): # 파란색 총알은 3개부터 시작한다
   bullets_blue.append(Bullet(0, HEIGHT * rnd.random(), rnd.random() - 0.5, rnd.random() - 0.5))
 
@@ -49,6 +50,18 @@ for _ in range(1): # 흰색 총알은 1개 부터 시작한다
 time_for_adding_bullets = 0
 time_for_adding_bullets_blue = 0 # 시간이 지남에 따라 파란색 총알을 증가시키기 위해 만듬
 time_for_adding_bullets_white = 0 # 시간이 지남에 따라 흰색 총알을 증가시키기 위해 만듬
+=======
+for _ in range(3):
+  bullets_blue.append(Bullet(0, HEIGHT * rnd.random(), rnd.random() - 0.5, rnd.random() - 0.5))
+
+bullets_white = []
+for _ in range(1):
+  bullets_white.append(Bullet(0, HEIGHT * rnd.random(), rnd.random() - 0.5, rnd.random() - 0.5))
+
+time_for_adding_bullets = 0
+time_for_adding_bullets_blue = 0
+time_for_adding_bullets_white = 0
+>>>>>>> 20bc4be0f9e602a3c6b42e60d3f0d2111241bfe9
 play_time = 0
 
 clock.tick(FPS)
@@ -64,6 +77,7 @@ life = 5 # 목숨을 5개로 설정함
 k = -3 # 무적시간을 3초로 설정해주기 위해 -3으로 설정함
 invin = False # 플레이어의 현재 상태가 무적인지 아닌지를 판단하기 위해서 만듬 True면 무적상태이고 False면 무적상태가 아니다
 life_bar = 150 # 목숨을 나타내는 막대기의 길이 값
+bullet_add_cnt = 0
 x = 0
 running = True
 gameover = False
@@ -80,12 +94,23 @@ while running:
     if time_for_adding_bullets >= 3000:
       bullets_red.append(Bullet(0, HEIGHT * rnd.random(), rnd.random() - 0.5, rnd.random() - 0.5))
       time_for_adding_bullets -= 3000
+<<<<<<< HEAD
     if time_for_adding_bullets_blue >= 6000: # 6초마다 파란색 총알 추가
       bullets_blue.append(Bullet(0, HEIGHT * rnd.random(), rnd.random() - 0.5, rnd.random() - 0.5))
       time_for_adding_bullets_blue -= 6000
     if time_for_adding_bullets_white >= 10000: # 10초마다 흰색 총알 추가
       bullets_white.append(Bullet(0, HEIGHT * rnd.random(), rnd.random() - 0.5, rnd.random() - 0.5))
       time_for_adding_bullets_white -= 10000
+=======
+    if time_for_adding_bullets_blue >= 6000:
+      bullets_blue.append(Bullet(0, HEIGHT * rnd.random(), rnd.random() - 0.5, rnd.random() - 0.5))
+      time_for_adding_bullets_blue -= 6000
+    if time_for_adding_bullets_white >= 10000:
+      bullets_white.append(Bullet(0, HEIGHT * rnd.random(), rnd.random() - 0.5, rnd.random() - 0.5))
+      time_for_adding_bullets_white -= 10000
+
+     
+>>>>>>> 20bc4be0f9e602a3c6b42e60d3f0d2111241bfe9
 
 
   for event in pygame.event.get():
@@ -127,6 +152,7 @@ while running:
 
   for b in bullets_red:
     b.update_and_draw(dt, screen)
+<<<<<<< HEAD
   for b2 in bullets_blue: # 파란색 총알을 그린다
     b2.update_and_draw_blue(dt, screen)
   for b3 in bullets_white: # 흰색 총알을 그린다
@@ -135,6 +161,16 @@ while running:
   draw_text(txt, 32, (10, 10), (255,255,255))
   draw_text(f"Life : {str(life)}", 32, (10, 50), (255, 255, 255)) # 남은 목숨의 수를 출력한다.
   pygame.draw.rect(screen, (255, 255, 255), [10, 100, life_bar, 30]) # 남은 목숨을 막대기 형태로 표현한다
+=======
+  for b2 in bullets_blue:
+    b2.update_and_draw_blue(dt, screen)
+  for b3 in bullets_white:
+    b3.update_and_draw_white(dt, screen)
+  txt = f"Time : {play_time/1000:.1f}, Bullets : {len(bullets_red)+len(bullets_blue)+len(bullets_white)}"
+  draw_text(txt, 32, (10, 10), (255,255,255))
+  draw_text(f"Life : {str(life)}", 32, (10, 50), (255, 255, 255))
+  pygame.draw.rect(screen, (255, 255, 255), [10, 100, life_bar, 30])
+>>>>>>> 20bc4be0f9e602a3c6b42e60d3f0d2111241bfe9
 
   if gameover:
     txt = "Game Over"
