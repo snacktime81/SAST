@@ -46,12 +46,13 @@ pygame.mixer.music.play(-1)
 collision_sound = pygame.mixer.Sound('pygame_practice/sound/shot.wav')
 
 explosion = pygame.image.load('pygame_practice/picture/explosion.png')
-explosion = pygame.transform.scale(explosion, (80, 80))
+explosion = pygame.transform.scale(explosion, (120, 120))
 
 bg_to_w = 0
 bg_to_h = 0
 life = 5
 k = -3
+invin = True
 x = 0
 running = True
 gameover = False
@@ -103,7 +104,7 @@ while running:
   bg_pos_h += bg_to_h
   screen.blit(bg_image, (bg_pos_w, bg_pos_h))
   player.update(dt,screen)
-  player.draw(screen)
+  player.draw(screen, invin)
 
   for b in bullets:
     b.update_and_draw(dt, screen)
@@ -118,6 +119,7 @@ while running:
   pygame.display.update()
 
   if play_time//1000 >= k + 3:
+    invin = True
     for b in bullets:
       if collision(player, b):
         collision_sound.play()
@@ -128,6 +130,6 @@ while running:
         if life == 0:
           gameover = True
   else:
-    continue
+    invin = False
 
 time.sleep(1)

@@ -4,6 +4,8 @@ class Player:
   def __init__(self, x, y):
     self.image = pygame.image.load('pygame_practice/picture/player.png')
     self.image = pygame.transform.scale(self.image, (64, 64))
+    self.image2 = pygame.image.load('pygame_practice/picture/player_invin.png')
+    self.image2 = pygame.transform.scale(self.image2, (64, 64))
     self.pos = [x//2, y//2]
     self.to = [0, 0]
     self.angle = 0
@@ -12,7 +14,7 @@ class Player:
     self.to[0] += x
     self.to[1] += y
 
-  def draw(self, screen):
+  def draw(self, screen, state):
     if self.to == [-1, -1]: self.angle = 45
     elif self.to == [-1, 0]: self.angle = 90
     elif self.to == [-1, 1]: self.angle = 135
@@ -21,8 +23,11 @@ class Player:
     elif self.to == [1, 0]: self.angle = -90
     elif self.to == [1, -1]: self.angle = -45
     elif self.to == [0, -1]: self.angle = 0
-
-    rotated_image = pygame.transform.rotate(self.image, self.angle)
+    if state:
+      k = self.image
+    else:
+      k = self.image2
+    rotated_image = pygame.transform.rotate(k, self.angle)
     calibpos = (self.pos[0] - rotated_image.get_width()/2, self.pos[1] - rotated_image.get_height()/2)
     screen.blit(rotated_image, calibpos)
 
@@ -36,8 +41,6 @@ class Player:
     self.pos[1] = (self.pos[1] + dt * self.to[1]) % height
   
     self.pos[0] = min((max(self.pos[0], 32)), width - 32)
-    self.pos[1] = min(max(self.pos[1], 32), height - 32)
-
 #    if self.pos[0] < 32:
 #      self.pos[0] = 32
 #    if self.pos[1] < 32:
