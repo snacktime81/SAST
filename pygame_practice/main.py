@@ -26,7 +26,7 @@ pygame.display.set_caption("bullet avoid")
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 
-bg_image = pygame.image.load('/home/user/바탕화면/수업 자료/과학과 소프트웨어적 사고/총알피하기/bg.jpg')
+bg_image = pygame.image.load('pygame_practice/picture/bg.jpg')
 bg_pos = 0
 
 player = Player(WIDTH, HEIGHT)
@@ -38,11 +38,11 @@ for _ in range(10):
 time_for_adding_bullets = 0
 play_time = 0
 
-time.sleep(3)
 clock.tick(FPS)
 
-pygame.mixer.music.load('/home/user/바탕화면/수업 자료/과학과 소프트웨어적 사고/총알피하기/bgm.wav')
+pygame.mixer.music.load('pygame_practice/sound/bgm.wav')
 pygame.mixer.music.play(-1)
+collision_sound = pygame.mixer.Sound('pygame_practice/sound/shot.wav')
 
 x = 0
 running = True
@@ -55,9 +55,9 @@ while running:
   if gameover == False:
     play_time += dt
     time_for_adding_bullets += dt
-    if time_for_adding_bullets >= 3000:
+    if time_for_adding_bullets >= 2000:
       bullets.append(Bullet(0, HEIGHT * rnd.random(), rnd.random() - 0.5, rnd.random() - 0.5))
-      time_for_adding_bullets -= 3000 
+      time_for_adding_bullets -= 2000 
 
 
   for event in pygame.event.get():
@@ -102,7 +102,7 @@ while running:
 
   for b in bullets:
     if collision(player, b):
-      
+      collision_sound.play()
       gameover = True
 
 

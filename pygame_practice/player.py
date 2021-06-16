@@ -2,7 +2,7 @@ import pygame
 
 class Player:
   def __init__(self, x, y):
-    self.image = pygame.image.load('/home/user/바탕화면/수업 자료/과학과 소프트웨어적 사고/총알피하기/player.png')
+    self.image = pygame.image.load('pygame_practice/picture/player.png')
     self.image = pygame.transform.scale(self.image, (64, 64))
     self.pos = [x//2, y//2]
     self.to = [0, 0]
