@@ -23,9 +23,12 @@ class Player:
     elif self.to == [0, -1]: self.angle = 0
 
     rotated_image = pygame.transform.rotate(self.image, self.angle)
-
     calibpos = (self.pos[0] - rotated_image.get_width()/2, self.pos[1] - rotated_image.get_height()/2)
     screen.blit(rotated_image, calibpos)
+
+  def calibpos(self):
+    calibpos = (self.pos[0] - self.image.get_width()/2, self.pos[1] - self.image.get_height()/2)
+    return calibpos
 
   def update(self, dt, screen):
     width, height = screen.get_size()

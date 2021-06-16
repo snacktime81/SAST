@@ -27,7 +27,8 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 
 bg_image = pygame.image.load('pygame_practice/picture/bg.jpg')
-bg_pos = 0
+bg_pos_w = 0
+bg_pos_h = 0
 
 player = Player(WIDTH, HEIGHT)
 
@@ -44,6 +45,11 @@ pygame.mixer.music.load('pygame_practice/sound/bgm.wav')
 pygame.mixer.music.play(-1)
 collision_sound = pygame.mixer.Sound('pygame_practice/sound/shot.wav')
 
+explosion = pygame.image.load('pygame_practice/picture/explosion.png')
+explosion = pygame.transform.scale(explosion, (80, 80))
+
+bg_to_w = 0
+bg_to_h = 0
 x = 0
 running = True
 gameover = False
@@ -66,25 +72,34 @@ while running:
     if event.type == pygame.KEYDOWN:
       if event.key == pygame.K_RIGHT:
         player.goto(1, 0)
+        bg_to_w -= dt * 0.05
       elif event.key == pygame.K_LEFT:
         player.goto(-1, 0)
+        bg_to_w += dt * 0.05
       elif event.key == pygame.K_UP:
         player.goto(0, -1)
+        bg_to_h -= dt * 0.05
       elif event.key == pygame.K_DOWN:
         player.goto(0, 1)
+        bg_to_h += dt * 0.05
     if event.type == pygame.KEYUP:
       if event.key == pygame.K_RIGHT:
         player.goto(-1, 0)
+        bg_to_w += dt * 0.05
       elif event.key == pygame.K_LEFT:
         player.goto(1, 0)
+        bg_to_w -= dt * 0.05
       elif event.key == pygame.K_UP:
         player.goto(0, 1)
+        bg_to_h += dt * 0.05
       elif event.key == pygame.K_DOWN:
-        player.goto(0, -1)      
+        player.goto(0, -1)
+        bg_to_h -= dt * 0.05   
 
   screen.fill((0, 0, 0))
-  screen.blit(bg_image, (bg_pos, 0))
-  bg_pos -= dt * 0.01
+  bg_pos_w += bg_to_w
+  bg_pos_h += bg_to_h
+  screen.blit(bg_image, (bg_pos_w, bg_pos_h))
   player.update(dt,screen)
   player.draw(screen)
 
@@ -103,6 +118,8 @@ while running:
   for b in bullets:
     if collision(player, b):
       collision_sound.play()
+      screen.blit(explosion, player.calibpos())
+      pygame.display.update()
       gameover = True
 
 
