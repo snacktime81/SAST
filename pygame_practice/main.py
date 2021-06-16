@@ -50,6 +50,8 @@ explosion = pygame.transform.scale(explosion, (80, 80))
 
 bg_to_w = 0
 bg_to_h = 0
+life = 5
+k = -3
 x = 0
 running = True
 gameover = False
@@ -115,12 +117,17 @@ while running:
     running = False
   pygame.display.update()
 
-  for b in bullets:
-    if collision(player, b):
-      collision_sound.play()
-      screen.blit(explosion, player.calibpos())
-      pygame.display.update()
-      gameover = True
-
+  if play_time//1000 >= k + 3:
+    for b in bullets:
+      if collision(player, b):
+        collision_sound.play()
+        screen.blit(explosion, player.calibpos())
+        pygame.display.update()
+        life -= 1
+        k = play_time//1000
+        if life == 0:
+          gameover = True
+  else:
+    continue
 
 time.sleep(1)
