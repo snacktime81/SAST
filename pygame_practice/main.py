@@ -4,7 +4,6 @@ import random as rnd
 from bullet import Bullet
 import math
 import time
-from matplotlib import pyplot
 
 def collision(obj1, obj2):
   dist = ((obj1.pos[0] - obj2.pos[0]) ** 2 + (obj1.pos[1] - obj2.pos[1]) ** 2)
@@ -35,11 +34,21 @@ bg_to_h = 0
 
 player = Player(WIDTH, HEIGHT)
 
-bullets = []
-for _ in range(10):
-  bullets.append(Bullet(0, HEIGHT * rnd.random(), rnd.random() - 0.5, rnd.random() - 0.5))
+bullets_red = []
+for _ in range(7):
+  bullets_red.append(Bullet(0, HEIGHT * rnd.random(), rnd.random() - 0.5, rnd.random() - 0.5))
+
+bullets_blue = []
+for _ in range(3):
+  bullets_blue.append(Bullet(0, HEIGHT * rnd.random(), rnd.random() - 0.5, rnd.random() - 0.5))
+
+bullets_white = []
+for _ in range(1):
+  bullets_white.append(Bullet(0, HEIGHT * rnd.random(), rnd.random() - 0.5, rnd.random() - 0.5))
 
 time_for_adding_bullets = 0
+time_for_adding_bullets_blue = 0
+time_for_adding_bullets_white = 0
 play_time = 0
 
 clock.tick(FPS)
@@ -55,6 +64,7 @@ life = 5 # 목숨을 5개로 설정함
 k = -3 # 무적시간을 3초로 설정해주기 위해 -3으로 설정함
 invin = False # 플레이어의 현재 상태가 무적인지 아닌지를 판단하기 위해서 만듬 True면 무적상태이고 False면 무적상태가 아니다
 life_bar = 150 # 목숨을 나타내는 막대기의 길이 값
+bullet_add_cnt = 0
 x = 0
 running = True
 gameover = False
@@ -66,9 +76,17 @@ while running:
   if gameover == False:
     play_time += dt
     time_for_adding_bullets += dt
-    if time_for_adding_bullets >= 2000:
-      bullets.append(Bullet(0, HEIGHT * rnd.random(), rnd.random() - 0.5, rnd.random() - 0.5))
-      time_for_adding_bullets -= 2000 
+    time_for_adding_bullets_blue += dt
+    time_for_adding_bullets_white += dt
+    if time_for_adding_bullets >= 3000:
+      bullets_red.append(Bullet(0, HEIGHT * rnd.random(), rnd.random() - 0.5, rnd.random() - 0.5))
+      time_for_adding_bullets -= 3000
+    if time_for_adding_bullets_blue >= 6000:
+      bullets_blue.append(Bullet(0, HEIGHT * rnd.random(), rnd.random() - 0.5, rnd.random() - 0.5))
+      time_for_adding_bullets_blue -= 6000
+    if time_for_adding_bullets_white >= 10000:
+      bullets_white.append(Bullet(0, HEIGHT * rnd.random(), rnd.random() - 0.5, rnd.random() - 0.5))
+      time_for_adding_bullets_white -= 10000
 
 
   for event in pygame.event.get():
@@ -108,17 +126,16 @@ while running:
   player.update(dt,screen)
   player.draw(screen, invin) # invin을 넣어서 플레이어의 무적 상태를 확인해 준다.
 
-  for b in bullets:
+  for b in bullets_red:
     b.update_and_draw(dt, screen)
-
-  txt = f"Time : {play_time/1000:.1f}, Bullets : {len(bullets)}"
+  for b2 in bullets_blue:
+    b2.update_and_draw_blue(dt, screen)
+  for b3 in bullets_white:
+    b3.update_and_draw_white(dt, screen)
+  txt = f"Time : {play_time/1000:.1f}, Bullets : {len(bullets_red)+len(bullets_blue)+len(bullets_white)}"
   draw_text(txt, 32, (10, 10), (255,255,255))
   draw_text(f"Life : {str(life)}", 32, (10, 50), (255, 255, 255))
   pygame.draw.rect(screen, (255, 255, 255), [10, 100, life_bar, 30])
-  #pygame.draw.rect(screen, (255, 255, 255), [40, 100, 30, 30])
-  #pygame.draw.rect(screen, (255, 255, 255), [70, 100, 30, 30])
-  #pygame.draw.rect(screen, (255, 255, 255), [100, 100, 30, 30])
-  #pygame.draw.rect(screen, (255, 255, 255), [130, 100, 30, 30])
 
   if gameover:
     txt = "Game Over"
@@ -128,7 +145,7 @@ while running:
 
   if play_time//1000 >= k + 3: #충돌시 시간에서 3초가 흐른후에 충돌여부를 확인 할 수 있게 만듬
     invin = False
-    for b in bullets:
+    for b in bullets_red:
       if collision(player, b):
         collision_sound.play() # 충돌시 효과음을 불러옴
         screen.blit(explosion, player.calibpos()) #충돌시 플레이어의 위치에 터지는 그림효과가 나타난다.
@@ -136,7 +153,23 @@ while running:
         life -= 1 # 충돌시 생명을 1개 감소함
         life_bar -= 30
         k = play_time//1000 # 충돌시 시간을 측정함
-        if life == 0:
+    for b2 in bullets_blue: # 파란색 총알과 충돌하는 경우
+      if collision(player, b2):
+        collision_sound.play()
+        screen.blit(explosion, player.calibpos()) 
+        pygame.display.update() 
+        life -= 2 # 충돌시 생명을 2개 감소함
+        life_bar -= 60
+        k = play_time//1000
+    for b3 in bullets_white: # 흰색 총알과 충돌하는 경우
+      if collision(player, b3):
+        collision_sound.play()
+        screen.blit(explosion, player.calibpos()) 
+        pygame.display.update() 
+        life -= 3 # 충돌시 생명을 3개 감소함
+        life_bar -= 90
+        k = play_time//1000 
+      if life == 0:
           gameover = True
   else: 
     invin = True
