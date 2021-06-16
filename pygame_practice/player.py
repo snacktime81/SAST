@@ -23,15 +23,15 @@ class Player:
     elif self.to == [1, 0]: self.angle = -90
     elif self.to == [1, -1]: self.angle = -45
     elif self.to == [0, -1]: self.angle = 0
-    if state:
-      k = self.image
-    else:
+    if state: # 무적상태 라면 비행기가 반짝거리는 그림으로 바뀐다
       k = self.image2
+    else: # 무적상태가 아니라면 일반 비행기 그림이 나온다
+      k = self.image
     rotated_image = pygame.transform.rotate(k, self.angle)
     calibpos = (self.pos[0] - rotated_image.get_width()/2, self.pos[1] - rotated_image.get_height()/2)
     screen.blit(rotated_image, calibpos)
 
-  def calibpos(self):
+  def calibpos(self): #플레이어의 현재위치를 알려주는 함수이다.
     calibpos = (self.pos[0] - self.image.get_width()/2, self.pos[1] - self.image.get_height()/2)
     return calibpos
 
@@ -41,11 +41,3 @@ class Player:
     self.pos[1] = (self.pos[1] + dt * self.to[1]) % height
   
     self.pos[0] = min((max(self.pos[0], 32)), width - 32)
-#    if self.pos[0] < 32:
-#      self.pos[0] = 32
-#    if self.pos[1] < 32:
-#      self.pos[1] = 32
-#    if self.pos[0] > width - 32:
-#      self.pos[0] = width - 32
-#    if self.pos[1] > height - 32:
-#      self.pos[1] = height - 32  
