@@ -15,6 +15,7 @@ def draw_text(txt, size, pos, color):
   r = font.render(txt, True, color)
   screen.blit(r, pos)
 
+rank = open("pygame_practice/ranking", "r+") # 플레이 타임을 기록하는 파일을 연다
 
 pygame.init()
 WIDTH, HEIGHT = 1000, 800
@@ -65,10 +66,11 @@ life = 5 # 목숨을 5개로 설정함
 k = -3 # 무적시간을 3초로 설정해주기 위해 -3으로 설정함
 invin = False # 플레이어의 현재 상태가 무적인지 아닌지를 판단하기 위해서 만듬 True면 무적상태이고 False면 무적상태가 아니다
 life_bar = 150 # 목숨을 나타내는 막대기의 길이 값
-bullet_add_cnt = 0
+t = 0 # 기록을 표시하는 높이 값
 x = 0
 running = True
 gameover = False
+rank_sys = False # False면 작동 x, True면 작동
 
 while running:
 
@@ -138,9 +140,39 @@ while running:
 
   if gameover:
     txt = "Game Over"
-    draw_text(txt, 100, (WIDTH/2 - 300 , HEIGHT/2 - 50), (255, 255, 255))
-    running = False
+    draw_text(txt, 100, (WIDTH/2 - 300 , HEIGHT/2 - 50), (255, 255, 255)) 
+    rank_sys = True #게임 오버시 랭킹을 보며주는 코드를 실행하게 한다
+    gameover = False
   pygame.display.update()
+
+  if rank_sys: 
+    memo = rank.readlines() # 파일안에 내용을 리스트로 받아온다
+    for i in range(len(memo)): # str형으로 저장된 내용을 int형으로 바꾼다
+      memo[i] = int(memo[i])
+    min_memo = memo.index(min(memo)) # 가장 작은 숫자의 index를 찾는다
+    if len(memo) < 10: # 기록이 10개 미만일때 무조건 플레이 타임을 기록한다.
+      rank.write(str(play_time) + '\n')
+      memo.append(play_time)
+    else:
+      if play_time > min(memo): # 플레이 타임이 가장 낮은 기록보다 길때 가장 낮은 기록을 지우고 새로운 기록을 작성한다.
+        memo[min_memo] = play_time
+        rank.seek(min_memo*5)
+        rank.write(str(play_time))
+    memo.sort(reverse=True) # 기록을 높은 순으로 정렬한다.
+
+    k = 0
+    for i in memo:
+      if i == play_time: # 새로운 기록이 생길경우 new를 앞에 붙힌다
+        draw_text("new " + str(int(i)/1000)[:4] + " second", 30, (WIDTH/2, t), (255, 255, 255))
+        t += 40
+        k += 1
+      else: # 기록을 화면에 표시한다.
+        draw_text(str(int(i)/1000)[:4] + " second", 30, (WIDTH/2, t), (255, 255, 255))
+        t += 40
+        k += 1
+      pygame.display.update()
+      time.sleep(2) 
+      running = False # 기록표시가 모두 끝나면 게임을 종료한다
 
   if play_time//1000 >= k + 3: #충돌시 시간에서 3초가 흐른후에 충돌여부를 확인 할 수 있게 만듬
     invin = False
@@ -168,7 +200,7 @@ while running:
         life -= 3 # 충돌시 생명을 3개 감소함
         life_bar -= 90
         k = play_time//1000 
-      if life == 0:
+      if life <= 0:
           gameover = True
   else: 
     invin = True
