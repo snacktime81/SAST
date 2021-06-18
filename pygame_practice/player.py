@@ -39,5 +39,5 @@ class Player:
     width, height = screen.get_size()
     self.pos[0] = (self.pos[0] + dt * self.to[0]) % width
     self.pos[1] = (self.pos[1] + dt * self.to[1]) % height
-  
+    self.pos[1] = min((max(self.pos[1], 32)), height - 32)
     self.pos[0] = min((max(self.pos[0], 32)), width - 32)

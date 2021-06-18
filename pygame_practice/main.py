@@ -102,10 +102,10 @@ while running:
         bg_to_w += dt * 0.05
       elif event.key == pygame.K_UP:
         player.goto(0, -1)
-        bg_to_h -= dt * 0.05
+        bg_to_h += dt * 0.05
       elif event.key == pygame.K_DOWN:
         player.goto(0, 1)
-        bg_to_h += dt * 0.05
+        bg_to_h -= dt * 0.05
     if event.type == pygame.KEYUP:
       if event.key == pygame.K_RIGHT:
         player.goto(-1, 0)
@@ -115,15 +115,15 @@ while running:
         bg_to_w -= dt * 0.05
       elif event.key == pygame.K_UP:
         player.goto(0, 1)
-        bg_to_h += dt * 0.05
+        bg_to_h -= dt * 0.05
       elif event.key == pygame.K_DOWN:
         player.goto(0, -1)
-        bg_to_h -= dt * 0.05   
+        bg_to_h += dt * 0.05   
 
   screen.fill((0, 0, 0))
   bg_pos_w += bg_to_w # 방향기를 누를 상태에 따라 배경이 지속적으로 이동함
   bg_pos_h += bg_to_h
-  screen.blit(bg_image, (bg_pos_w, bg_pos_h)) # 상하로도 배경이 움직이기 위해 bg_pos_h를 넣어줌
+  screen.blit(bg_image, (bg_pos_w - 600, bg_pos_h - 300)) # 상하로도 배경이 움직이기 위해 bg_pos_h를 넣어줌
   player.update(dt,screen)
   player.draw(screen, invin) # invin을 넣어서 플레이어의 무적 상태를 확인해 준다.
 
@@ -140,7 +140,7 @@ while running:
 
   if gameover:
     txt = "Game Over"
-    draw_text(txt, 100, (WIDTH/2 - 300 , HEIGHT/2 - 50), (255, 255, 255)) 
+    draw_text(txt, 80, (WIDTH/2 - 250 , HEIGHT/2 - 50), (255, 255, 255)) 
     rank_sys = True #게임 오버시 랭킹을 보며주는 코드를 실행하게 한다
     gameover = False
   pygame.display.update()
@@ -159,18 +159,18 @@ while running:
         cnt = 0
         for i in range(min_memo):
           cnt += len(str(memo[i]))
-        rank.seek(cnt+min_memo)  # 수정해야함
+        rank.seek(cnt+min_memo)
         rank.write(str(play_time) + '\n')
     memo.sort(reverse=True) # 기록을 높은 순으로 정렬한다.
 
     k = 0
     for i in memo:
       if i == play_time: # 새로운 기록이 생길경우 new를 앞에 붙힌다
-        draw_text("new " + str(int(i)/1000)[:4] + " second", 30, (WIDTH/2, t), (255, 255, 255))
+        draw_text("new " + f"{i/1000:.2f}"+ " second", 30, (WIDTH - 290, t), (255, 255, 255))
         t += 40
         k += 1
       else: # 기록을 화면에 표시한다.
-        draw_text(str(int(i)/1000)[:4] + " second", 30, (WIDTH/2, t), (255, 255, 255)) # 소수점 자리 수정
+        draw_text(f"{i/1000:.2f}" + " second", 30, (WIDTH - 220, t), (255, 255, 255)) # 소수점 자리 수정
         t += 40
         k += 1
       pygame.display.update()
