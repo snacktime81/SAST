@@ -149,15 +149,18 @@ while running:
     memo = rank.readlines() # 파일안에 내용을 리스트로 받아온다
     for i in range(len(memo)): # str형으로 저장된 내용을 int형으로 바꾼다
       memo[i] = int(memo[i])
-    min_memo = memo.index(min(memo)) # 가장 작은 숫자의 index를 찾는다
     if len(memo) < 10: # 기록이 10개 미만일때 무조건 플레이 타임을 기록한다.
       rank.write(str(play_time) + '\n')
       memo.append(play_time)
-    else:
+    min_memo = memo.index(min(memo)) # 가장 작은 숫자의 index를 찾는다
+    if len(memo) >= 10:
       if play_time > min(memo): # 플레이 타임이 가장 낮은 기록보다 길때 가장 낮은 기록을 지우고 새로운 기록을 작성한다.
         memo[min_memo] = play_time
-        rank.seek(min_memo*5)
-        rank.write(str(play_time))
+        cnt = 0
+        for i in range(min_memo):
+          cnt += len(str(memo[i]))
+        rank.seek(cnt+min_memo)  # 수정해야함
+        rank.write(str(play_time) + '\n')
     memo.sort(reverse=True) # 기록을 높은 순으로 정렬한다.
 
     k = 0
@@ -167,12 +170,12 @@ while running:
         t += 40
         k += 1
       else: # 기록을 화면에 표시한다.
-        draw_text(str(int(i)/1000)[:4] + " second", 30, (WIDTH/2, t), (255, 255, 255))
+        draw_text(str(int(i)/1000)[:4] + " second", 30, (WIDTH/2, t), (255, 255, 255)) # 소수점 자리 수정
         t += 40
         k += 1
       pygame.display.update()
-      time.sleep(2) 
-      running = False # 기록표시가 모두 끝나면 게임을 종료한다
+      time.sleep(1) 
+    running = False # 기록표시가 모두 끝나면 게임을 종료한다
 
   if play_time//1000 >= k + 3: #충돌시 시간에서 3초가 흐른후에 충돌여부를 확인 할 수 있게 만듬
     invin = False
